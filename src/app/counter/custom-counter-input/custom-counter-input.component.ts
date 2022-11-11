@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { customIncrement } from '../state/counter.action';
+import { Observable } from 'rxjs';
+import { changeName, customIncrement } from '../state/counter.action';
+import { getName } from '../state/counter.selector';
 import { CounterState } from '../state/counter.state';
 
 @Component({
@@ -10,13 +12,19 @@ import { CounterState } from '../state/counter.state';
 })
 export class CustomCounterInputComponent implements OnInit {
   value!: number;
+  name$!: Observable<string>;
   constructor(private store: Store<{ counter: CounterState }>) { }
 
   ngOnInit(): void {
+    this.name$ = this.store.select(getName);
   }
 
   onAdd(): void {
     this.store.dispatch(customIncrement({ count: +this.value }));
+  }
+
+  onChange(): void {
+    this.store.dispatch(changeName());
   }
 
 }
